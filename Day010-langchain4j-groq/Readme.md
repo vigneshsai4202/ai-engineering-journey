@@ -3,7 +3,9 @@
 - `Main.java` – Connects to Groq and sends prompts to the LLM.
 - `Assistant.java` – AI Service interface used by LangChain4j.
 - `.env.example` – Sample environment configuration.
-- `pom.xml` – Maven dependencies.## ▶️ How to Run
+- `pom.xml` – Maven dependencies.
+  
+   ## ▶️ How to Run
 
 1. Clone the repository.
 2. Create a `.env` file:
