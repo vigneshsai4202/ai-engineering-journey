@@ -1,0 +1,17 @@
+# Ignore environment variables
+.env
+
+# Ignore Maven build output
+target/
+
+# Ignore Eclipse project settings
+.settings/
+.project
+.classpath
+
+# Ignore compiled Java files
+*.class
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
