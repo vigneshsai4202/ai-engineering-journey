@@ -1,34 +1,16 @@
-# Day 19 — Persistent RAG with PGVector
+# Day 20 — Advanced RAG Retrieval with Reranking
 
 ## Overview
 
-Today I upgraded my Day 18 RAG application by replacing the in-memory vector store with **PostgreSQL + PGVector**.
+Today I upgraded my Day 19 persistent RAG system by improving the **retrieval stage**.
 
-The main reason was **persistence**.
+In Day 19, the system retrieved the Top-K most similar chunks from PGVector and directly passed them to the LLM.
 
-With `InMemoryEmbeddingStore`, embeddings disappear when the application stops. With PGVector, embeddings are stored permanently in PostgreSQL, so the application can reuse them without re-processing the PDF every time.
+In Day 20, I added **metadata filtering, similarity thresholds and reranking** so that the LLM receives more relevant context.
+
+The main goal was to improve **retrieval precision** and reduce irrelevant context.
 
 ## Architecture
-
-### Indexing
-
-```text
-PDF
- ↓
-Apache PDFBox
- ↓
-Chunking
- ↓
-TextSegment + Metadata
- ↓
-BGE-M3
- ↓
-1024D Embeddings
- ↓
-PGVector
- ↓
-Neon PostgreSQL
-```
 
 ### Retrieval
 
@@ -39,197 +21,192 @@ BGE-M3
  ↓
 Query Embedding
  ↓
+Metadata Filter
+ ↓
 PGVector Similarity Search
  ↓
-Top-K Results
+Top-K + minScore
  ↓
-Context
+Jina Reranker
  ↓
-Groq
- ↓
-Final Answer
-```
+Best Context
+ Project Files
+DatabaseTest.java
 
-## Project Files
+Tests the connection to Neon PostgreSQL.
 
-### `DatabaseTest.java`
-
-First, I tested the PostgreSQL connection independently.
-
-```text
 Java → JDBC → Neon PostgreSQL
-```
+MetadataFilterTest.java
 
-Output confirmed:
+Tests metadata filtering using fields such as:
 
-```text
-✅ Connected to Neon PostgreSQL!
-```
+documentName
+chunkId
 
-### `VectorStoreTest.java`
+This allows retrieval to focus on a specific document.
 
-Next, I tested whether LangChain4j could store and retrieve vectors using PGVector.
+AdvancedRetriever.java
 
-I first used a small dummy vector to verify the database integration before using real embeddings.
+Tests:
 
-### `EmbeddingModelTest.java`
+Top-K = 5
+minScore = 0.70
 
-I tested the BGE-M3 embedding model separately.
+This controls how many results are returned and removes results below the similarity threshold.
 
-The model converts text into a **1024-dimensional vector**.
+Day20TestData.java
 
-### `BgePgVectorTest.java`
+Creates five test chunks related to Spring Boot, PostgreSQL, Docker and Java.
 
-After testing both components separately, I connected:
+The chunks are stored in:
 
-```text
-BGE-M3 → PGVector
-```
+day20_test_embeddings
 
-This confirmed that real embeddings could be stored and searched.
+This provides multiple candidates for reranking.
 
-### `PdfIndexer.java`
+Day20RetrievalBaseline.java
 
-This handles the indexing pipeline:
+Tests PGVector retrieval before reranking.
 
-```text
-PDF → Text → Chunks → Metadata → Embeddings → PGVector
-```
+For:
 
-I used Apache PDFBox to extract readable text from the PDF.
+What is Spring Boot used for?
 
-I also processed embeddings in batches because sending hundreds of chunks at once caused a timeout.
+PGVector returned:
 
-### `PdfRetriever.java`
+Spring Boot → 0.8457
+Spring Boot → 0.7965
+PostgreSQL  → 0.6668
+Java        → 0.6637
+Docker      → 0.6569
+JinaRerankerTest.java
 
-This tests retrieval independently:
+Tests Jina reranking on the same candidates.
 
-```text
+Spring Boot → 0.7431
+Spring Boot → 0.5111
+PostgreSQL  → 0.0675
+Docker      → 0.0592
+Java        → 0.0481
+
+This showed how reranking improves relevance selection.
+
+AdvancedRag.java
+
+Combines the complete pipeline:
+
 Question
  ↓
 BGE-M3
  ↓
+Metadata Filter
+ ↓
 PGVector
  ↓
-Similarity Search
+Top-K
  ↓
-Top-K Results
-```
-
-The retrieval successfully returned a similarity score of approximately:
-
-```text
-0.7514
-```
-
-### `PersistentPdfRag.java`
-
-Finally, I combined retrieval with Groq.
-
-The retrieved chunks are added to the prompt as context, and Groq generates the final answer.
+Jina Reranker
+ ↓
+Best 2 Chunks
+ ↓
+Groq
+ ↓
+Answer + Sources
 
 The final test correctly answered:
 
-> Spring Boot is used to build production-ready Java applications.
+Spring Boot is used to build production-ready applications.
 
-## Metadata
+Sources were also returned:
 
-Each stored chunk also contains metadata such as:
+day20-test-document | Chunk 0
+day20-test-document | Chunk 1
+Why Reranking?
 
-```text
-documentName
-chunkId
-```
+Vector search finds semantically similar candidates, but some may be only loosely related.
 
-Example:
+Reranking evaluates the retrieved candidates against the actual question and helps select the most relevant context.
 
-```text
-Document: sample-java-notes.pdf
-Chunk ID: 0
-```
+Vector Search
+ ↓
+Candidates
+ ↓
+Reranker
+ ↓
+Best Context
+ ↓
+LLM
+Day 19 vs Day 20
+Day 19
+Question
+ ↓
+Embedding
+ ↓
+PGVector
+ ↓
+Top-K
+ ↓
+LLM
 
-This helps identify where retrieved information came from.
+Focus: Persistent vector storage and basic retrieval.
 
-## Why PostgreSQL + PGVector?
+Day 20
+Question
+ ↓
+Embedding
+ ↓
+Metadata Filter
+ ↓
+PGVector
+ ↓
+Top-K + minScore
+ ↓
+Jina Reranker
+ ↓
+Best Context
+ ↓
+LLM
 
-### Day 18
+Focus: Better retrieval quality.
 
-```text
-PDF → Embeddings → InMemoryEmbeddingStore
-```
+How I Tested
 
-Embeddings were temporary.
+I tested each component separately:
 
-### Day 19
+PostgreSQL
+ ↓
+Metadata Filtering
+ ↓
+Top-K + minScore
+ ↓
+Test Dataset
+ ↓
+PGVector Baseline
+ ↓
+Jina Reranking
+ ↓
+Complete RAG
 
-```text
-PDF → Embeddings → PGVector → PostgreSQL
-```
+This made it easier to verify each stage before combining them.
 
-Embeddings are persistent.
+Technologies
+Java 17
+Maven
+LangChain4j
+BGE-M3
+Neon PostgreSQL
+PGVector
+Jina Reranker
+Groq / Llama
+Key Takeaway
 
-This means restarting the application does not require generating all embeddings again.
+Day 20 taught me that good RAG is not only about retrieving similar information.
 
-For a larger application with thousands of documents, persistent storage becomes much more practical.
+The system should:
 
-## Problems I Faced
+Retrieve → Filter → Rerank → Select Context → Generate
 
-### PDF parsing issue
-
-Initially, the PDF was being stored as raw `%PDF-1.5` content.
-
-I fixed this by explicitly using:
-
-```text
-ApachePdfBoxDocumentParser
-```
-
-### Embedding timeout
-
-When hundreds of chunks were sent to BGE-M3 at once, the request timed out.
-
-I solved this by processing chunks in smaller batches.
-
-### Metadata initially returned `null`
-
-The first indexed records did not contain metadata because they were created before metadata was added.
-
-I cleared the table and re-indexed the PDF. After that:
-
-```text
-Document: sample-java-notes.pdf
-Chunk ID: 0
-```
-
-worked correctly.
-
-## Technologies
-
-* Java 17
-* Maven
-* LangChain4j
-* BGE-M3
-* Hugging Face
-* PostgreSQL
-* PGVector
-* Neon
-* Apache PDFBox
-* Groq
-
-## Key Takeaway
-
-Day 19 taught me that a practical RAG system needs two separate stages:
-
-```text
-INDEXING
-Documents → Chunks → Embeddings → Vector Database
-```
-
-and:
-
-```text
-RETRIEVAL
-Question → Embedding → Similarity Search → Context → LLM
-```
-
-The biggest upgrade from Day 18 was moving from temporary in-memory storage to **persistent PostgreSQL + PGVector**, making the RAG architecture more suitable for real applications.
+This produces more relevant context and makes the RAG pipeline closer to a production-style architecture
+Groq
+ ↓
+Final Answer + Sources
