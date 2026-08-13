@@ -1,0 +1,66 @@
+# Day 21 — Advanced RAG with Query Transformation
+
+## Overview
+
+Today I upgraded my Day 20 RAG pipeline by adding **Query Transformation** using LangChain4j.
+
+Instead of sending only the original question to the vector database, the `ExpandingQueryTransformer` generates multiple queries to improve retrieval coverage.
+
+## Architecture
+
+```text
+User Question
+      ↓
+QueryTransformer
+      ↓
+Multiple Queries
+      ↓
+BGE-M3
+      ↓
+PGVector
+      ↓
+Aggregate & Deduplicate
+      ↓
+Jina Reranker
+      ↓
+Best Context
+      ↓
+Groq
+      ↓
+Final Answer
+What I Implemented
+LangChain4j QueryTransformer
+ExpandingQueryTransformer
+Multiple query generation
+BGE-M3 query embeddings
+PGVector retrieval
+Result aggregation and deduplication
+Jina reranking
+Groq-based final answer generation
+Day 20 vs Day 21
+Day 20:
+Query → PGVector → Rerank → LLM
+
+Day 21:
+Query → Transform → Multiple Queries
+      → PGVector → Aggregate → Rerank → LLM
+Tomorrow
+
+Next, I will explore the remaining LangChain4j Advanced RAG abstractions:
+
+ContentRetriever
+      ↓
+ContentAggregator
+      ↓
+ContentInjector
+      ↓
+RetrievalAugmentor
+
+The goal is to move from manually connecting each RAG component to a cleaner LangChain4j-managed Advanced RAG pipeline.
+
+Key Takeaway
+
+Query transformation helps improve retrieval by giving the vector search multiple ways to understand the user's question.
+
+
+This is concise enough for your GitHub repo while clearly showing **what you completed today a
