@@ -1,0 +1,10 @@
+Spring Boot is a Java framework built on top of the Spring ecosystem.
+
+Spring Boot simplifies application development through auto-configuration,
+starter dependencies, embedded servers, and production-ready features.
+
+Spring Boot applications can be packaged as executable JAR files and
+run with an embedded web server such as Tomcat.
+
+Spring Boot is commonly used for REST APIs, web applications,
+microservices, and enterprise applications.
