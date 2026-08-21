@@ -1,0 +1,43 @@
+# Day 30 - Enterprise AI Assistant 
+
+Built the first working RAG backend using Spring Boot, LangChain4j and Groq.
+
+## What I built
+
+- Spring Boot REST API
+- LangChain4j integration
+- Groq LLM
+- Document ingestion
+- Document chunking
+- Local embeddings
+- In-memory vector store
+- Semantic vector search
+- RAG pipeline
+
+## RAG Flow
+
+Document
+↓
+Chunking
+↓
+Embeddings
+↓
+Vector Store
+↓
+Semantic Search
+↓
+Relevant Context
+↓
+Groq
+↓
+Final Answer
+
+## API
+
+GET /api/search
+
+GET /api/rag
+
+## Next
+
+Starting Spring AI and gradually migrating the AI functionality to Spring AI.
