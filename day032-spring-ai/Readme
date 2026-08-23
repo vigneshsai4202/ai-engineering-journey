@@ -1,0 +1,55 @@
+# Day 32 — Getting Started with Spring AI 🚀
+
+After learning LangChain4j, today I started exploring Spring AI and built my first AI-powered REST API using Spring Boot, Spring AI, and Groq.
+
+## Day 31 — What I Learned
+
+- What Spring AI is
+- Why it is useful for Java/Spring Boot developers
+- Spring AI vs LangChain4j
+- Basic AI application architecture
+- Chat models, prompts and AI integrations
+
+## Day 32 — What I Built
+
+### Tech Stack
+
+- Java 17
+- Spring Boot 4.1.1
+- Spring AI 2.0.0
+- Groq
+- Maven
+- REST API
+
+### What I Learned
+
+- `ChatClient`
+- System prompts
+- Dynamic user prompts
+- Temperature
+- REST API integration
+- Connecting Spring AI with Groq
+
+Basic flow:
+
+```text
+REST API
+   ↓
+ChatController
+   ↓
+ChatService
+   ↓
+ChatClient
+   ↓
+Groq
+   ↓
+AI Response
+
+LangChain4j vs Spring AI
+LangChain4j	Spring AI
+ChatLanguageModel / AI Services	ChatClient
+AiServices	ChatClient + Spring DI
+EmbeddingStore	VectorStore
+ChatMemory	ChatMemory
+RAG / RetrievalAugmentor	Advisors / RAG
+Java-focused LLM framework	Spring ecosystem focused
