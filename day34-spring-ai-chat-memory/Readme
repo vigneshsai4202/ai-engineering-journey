@@ -1,0 +1,32 @@
+# Day 34 - Spring AI Chat Memory 🧠
+
+Today I learned how to add conversation memory to a Spring AI application.
+
+## What I learned
+
+- ChatClient
+- ChatMemory
+- MessageWindowChatMemory
+- MessageChatMemoryAdvisor
+- Conversation ID
+- Multi-turn conversations
+- Maintaining context between requests
+
+## How it works
+
+The application stores previous messages in ChatMemory and uses a conversation ID to identify the conversation.
+
+```text
+User
+ ↓
+ChatController
+ ↓
+ChatService
+ ↓
+ChatClient
+ ↓
+MessageChatMemoryAdvisor
+ ↓
+ChatMemory
+ ↓
+Groq
