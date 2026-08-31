@@ -1,0 +1,5 @@
+Day 35: Learned the basics of working with AI/LLM APIs and sending prompts to get responses.
+
+Day 36: Took it further by building a real RAG system that loads PDFs, creates embeddings, searches relevant content, and gives grounded answers with sources.
+
+In short: Day 35 was about talking to the AI; Day 36 was about giving the AI access to your own knowledge.
