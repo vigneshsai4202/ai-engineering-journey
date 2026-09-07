@@ -1,0 +1,84 @@
+# Day 41 — Hybrid RAG with Spring AI
+
+## Overview
+
+Built a Hybrid RAG application using Spring AI that combines semantic
+vector search with PostgreSQL keyword search.
+
+The retrieved results are combined and passed to a Qwen LLM to generate
+a grounded response.
+
+## Tech Stack
+
+- Java 17
+- Spring Boot 4.1.1
+- Spring AI 2.0.1
+- Groq / Qwen
+- Ollama
+- nomic-embed-text
+- PostgreSQL
+- Neon
+- PGVector
+
+## Architecture
+
+User Question
+      |
+      +------------------+
+      |                  |
+      v                  v
+Vector Search       Keyword Search
+PGVector            PostgreSQL FTS
+      |                  |
+      +--------+---------+
+               |
+               v
+        Combine Results
+               |
+               v
+          Deduplicate
+               |
+               v
+            Context
+               |
+               v
+          Qwen / Groq
+               |
+               v
+        Grounded Answer
+
+## Features
+
+- Semantic vector search
+- PostgreSQL full-text search
+- Hybrid retrieval
+- Result deduplication
+- Context construction
+- LLM-based answer generation
+- Grounded responses
+
+## API
+
+### Load Documents
+
+GET `/documents/load`
+
+### Vector Search
+
+GET `/search?question=what is RAG`
+
+### Keyword Search
+
+GET `/keyword-search?question=JVM`
+
+### Hybrid RAG
+
+GET `/rag/ask?question=What is RAG?`
+
+## Key Learning
+
+Vector search understands semantic meaning while keyword search is useful
+for exact technical terms.
+
+Hybrid retrieval combines both approaches to improve retrieval coverage
+before generating the final LLM response.
