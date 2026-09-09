@@ -1,0 +1,27 @@
+[
+  {
+    "question": "What is Java?",
+    "expectedAnswer": "Java is a high-level, object-oriented programming language.",
+    "expectedSource": "java"
+  },
+  {
+    "question": "What is Spring Boot?",
+    "expectedAnswer": "Spring Boot is a framework for building Spring applications with minimal configuration.",
+    "expectedSource": "spring"
+  },
+  {
+    "question": "What is RAG?",
+    "expectedAnswer": "RAG combines information retrieval with a language model to generate answers grounded in retrieved documents.",
+    "expectedSource": "rag"
+  },
+  {
+    "question": "What is dependency injection?",
+    "expectedAnswer": "Dependency injection is a design pattern where dependencies are provided to a class instead of the class creating them itself.",
+    "expectedSource": "spring"
+  },
+  {
+    "question": "What is vector similarity search?",
+    "expectedAnswer": "Vector similarity search finds documents whose embeddings are semantically similar to a query.",
+    "expectedSource": "rag"
+  }
+]
