@@ -1,0 +1,29 @@
+# 🚀 Day 42–43: RAG Evaluation with Spring AI
+
+## 📌 100 Days of AI Engineering
+
+This project covers **RAG Evaluation** using **Spring AI**, PostgreSQL/PGVector, Ollama embeddings, and Groq/Qwen.
+
+- **Day 42:** RAG Evaluation – Theory & Concepts
+- **Day 43:** RAG Evaluation – Practical Implementation
+
+The goal is to understand not only whether a RAG system generates an answer, but also whether it retrieves the **right information** and produces a **grounded answer**.
+
+---
+
+# 🧠 Day 42 – RAG Evaluation Theory
+
+## Why Do We Need RAG Evaluation?
+
+A RAG system can fail in two major areas:
+
+```text
+User Question
+      ↓
+Retrieval
+      ↓
+Retrieved Documents
+      ↓
+LLM
+      ↓
+Generated Answer
