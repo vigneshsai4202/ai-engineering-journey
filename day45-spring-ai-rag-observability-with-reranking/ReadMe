@@ -1,0 +1,28 @@
+# Day 45 – RAG Reranking with Spring AI + Jina AI
+
+## 🚀 100 Days of AI Engineering
+
+Day 45 focuses on improving the retrieval quality of a RAG system using **Reranking**.
+
+Instead of directly sending the top vector-search results to the LLM, we first retrieve a larger set of candidates from PGVector and then use **Jina AI Reranker** to reorder them based on their relevance to the user's question.
+
+This project is an **upgrade of the Day 44 RAG Observability project**.
+
+---
+
+## 🎯 Objective
+
+Improve RAG answer quality by adding a **reranking layer** between vector retrieval and the LLM.
+
+### Previous Day 44 Flow
+
+```text
+User Question
+      ↓
+PGVector Similarity Search
+      ↓
+Top Documents
+      ↓
+Qwen LLM
+      ↓
+Answer
