@@ -1,0 +1,35 @@
+# Day 46 – RAG Resilience & Fallback
+
+## 🚀 100 Days of AI Engineering
+
+Day 46 is an **upgrade to the Day 44 RAG Observability project**.
+
+Instead of creating a new project, I extended the existing RAG application by adding **failure handling and fallback mechanisms** to make the RAG pipeline more resilient.
+
+### Features added in Day 46
+
+- Jina Reranker failure handling
+- PGVector fallback mechanism
+- Graceful degradation
+- Fallback logging
+- Continued RAG observability
+- Reliable LLM generation even when the reranking service fails
+
+---
+
+# 🔄 What Changed from Day 44?
+
+### Day 44 – RAG Observability
+
+The project originally focused on monitoring the RAG pipeline.
+
+```text
+User Question
+      ↓
+PGVector
+      ↓
+Retrieved Documents
+      ↓
+Qwen LLM
+      ↓
+Answer
